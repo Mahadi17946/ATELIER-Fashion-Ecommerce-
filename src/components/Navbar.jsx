@@ -1,5 +1,6 @@
 'use client';
 
+import { useCart } from '@/lib/cart';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -52,7 +53,7 @@ const MENU = [
       ['Scarves', '/shop/accessories/scarves'],
     ],
   },
-  { label: 'Wishlist', href: '/wishlist' }, // Sale er jaygay Wishlist add kora holo
+  { label: 'Wishlist', href: '/wishlist' },
 ];
 
 const PRODUCTS = [
@@ -183,11 +184,8 @@ function Badge({ count }) {
   );
 }
 
-export default function Navbar({
-  cartCount = 0,
-  wishlistCount = 0,
-  onCartClick,
-}) {
+export default function Navbar() {
+  const { count: cartCount } = useCart();
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const [openSub, setOpenSub] = useState(null);
@@ -256,7 +254,7 @@ export default function Navbar({
     <>
       <div className="bg-[#111111] text-[12px] leading-none text-white">
         <div className="mx-auto flex max-w-[1440px] items-center justify-center px-4 py-[10px] lg:justify-between lg:px-8">
-          <p className="m-0">
+          <p className="m-0 text-center lg:text-left">
             Free delivery in Dhaka over ৳3000. Cash on delivery available.
           </p>
           <div className="hidden gap-5 lg:flex">
@@ -279,22 +277,21 @@ export default function Navbar({
       <header className="sticky top-0 z-50 border-b border-black/10 bg-white text-[#111111]">
         <nav
           aria-label="Main"
-          className="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-6 lg:px-12"
+          className="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-12"
         >
-          {/* Left Side: Logo + Menu */}
-          <div className="flex items-center gap-[320px]">
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                className={`${ICON_BTN} -ml-2 lg:hidden`}
-                onClick={() => setMenuOpen(true)}
-                aria-label="Open menu"
-                aria-expanded={menuOpen}
-              >
-                <FiMenu size={22} />
-              </button>
-              <Logo />
-            </div>
+          {/* Left Side: Mobile Menu Button + Logo + Desktop Links */}
+          <div className="flex items-center gap-3 lg:gap-[320px]">
+            {/* Mobile Hamburger Menu Button */}
+            <button
+              type="button"
+              className={`${ICON_BTN} lg:hidden`}
+              onClick={() => setMenuOpen(true)}
+              aria-label="Open menu"
+            >
+              <FiMenu size={22} />
+            </button>
+
+            <Logo />
 
             {/* Desktop Links */}
             <ul className="m-0 hidden h-full list-none items-center p-0 lg:flex gap-6">
@@ -338,12 +335,12 @@ export default function Navbar({
             </ul>
           </div>
 
-          {/* Right Side: Search Box + Bag + User Icon (Account icon moved to extreme right) */}
-          <div className="flex items-center gap-5">
-            {/* Search Box */}
+          {/* Right Side: Search Box + Bag + User Icon */}
+          <div className="flex items-center gap-1 sm:gap-4">
+            {/* Desktop Search Box */}
             <div
               onClick={() => setSearchOpen(true)}
-              className="hidden sm:flex items-center justify-between w-[220px] lg:w-[250px] h-10 px-4 bg-[#F4F4F5] hover:bg-[#EAEAEA] border border-black/10 rounded-full cursor-pointer transition-all"
+              className="hidden sm:flex items-center justify-between w-[180px] md:w-[220px] lg:w-[250px] h-10 px-4 bg-[#F4F4F5] hover:bg-[#EAEAEA] border border-black/10 rounded-full cursor-pointer transition-all"
             >
               <div className="overflow-hidden h-5 relative flex-1">
                 <span className="absolute inset-0 flex items-center text-[13px] text-[#111111]/60 transition-all duration-500 ease-in-out">
@@ -355,6 +352,7 @@ export default function Navbar({
               </span>
             </div>
 
+            {/* Mobile Search Icon */}
             <button
               type="button"
               className={`${ICON_BTN} sm:hidden`}
@@ -364,17 +362,15 @@ export default function Navbar({
               <FiSearch size={22} />
             </button>
 
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
+            <div className="flex items-center gap-1 sm:gap-2">
+              <Link
+                href="/cart"
                 className={ICON_BTN}
-                onClick={onCartClick}
                 aria-label={`Bag, ${cartCount} items`}
               >
                 <FiShoppingBag size={22} />
                 <Badge count={cartCount} />
-              </button>
-              {/* Account/User icon moved to the extreme right */}
+              </Link>
               <Link href="/account" className={ICON_BTN} aria-label="Account">
                 <FiUser size={22} />
               </Link>
@@ -391,7 +387,7 @@ export default function Navbar({
               : 'invisible opacity-0 pointer-events-none'
           }`}
         >
-          <div className="mx-auto flex h-16 max-w-[1440px] items-center px-6 lg:px-12">
+          <div className="mx-auto flex h-16 max-w-[1440px] items-center px-4 sm:px-6 lg:px-12">
             <form
               onSubmit={submitSearch}
               role="search"
@@ -419,7 +415,7 @@ export default function Navbar({
             </form>
           </div>
 
-          <div className="max-h-[65vh] overflow-y-auto border-t border-black/10 px-6 lg:px-12">
+          <div className="max-h-[65vh] overflow-y-auto border-t border-black/10 px-4 sm:px-6 lg:px-12">
             <div className="mx-auto max-w-[1440px] py-5">
               {!query.trim() && (
                 <div className="flex flex-wrap items-center gap-2">

@@ -2,12 +2,11 @@
 
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
-import { FiArrowRight, FiHeart, FiShoppingBag } from 'react-icons/fi';
+import { FiArrowRight, FiCheck, FiHeart, FiShoppingBag } from 'react-icons/fi';
+import { useCart } from '@/lib/cart';
 
 /* =========================================================
    PRODUCTS: naam, price, photo ekhane change korba.
-   Nijer photo dite hole public/products/ e rekhe
-   image: '/products/panjabi.jpg' likho.
    ========================================================= */
 const PRODUCTS = [
   {
@@ -83,11 +82,12 @@ const FILTERS = ['All', 'Women', 'Men', 'Accessories'];
 const FOCUS =
   'focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#111111] focus-visible:outline-offset-2';
 
-const taka = n => `৳${n.toLocaleString('en-US')}`;
+const taka = n => `৳${Number(n).toLocaleString('en-US')}`;
 
-export default function Trending({ onAddToBag }) {
+export default function Trending() {
+  const { addItem, wishIds, toggleWish } = useCart();
   const [filter, setFilter] = useState('All');
-  const [wished, setWished] = useState([]);
+  const [addedId, setAddedId] = useState(null);
 
   const items = useMemo(
     () =>
@@ -95,8 +95,16 @@ export default function Trending({ onAddToBag }) {
     [filter],
   );
 
-  const toggleWish = id => {
-    setWished(w => (w.includes(id) ? w.filter(x => x !== id) : [...w, id]));
+  const handleAdd = product => {
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      href: product.href,
+    });
+    setAddedId(product.id);
+    setTimeout(() => setAddedId(null), 1500);
   };
 
   return (
@@ -147,7 +155,8 @@ export default function Trending({ onAddToBag }) {
         {/* Product grid */}
         <ul className="m-0 grid w-full list-none grid-cols-2 gap-x-3 gap-y-8 p-0 sm:gap-x-5 lg:grid-cols-4 lg:gap-x-6">
           {items.map(p => {
-            const isWished = wished.includes(p.id);
+            const isWished = wishIds.includes(p.id);
+            const isAdded = addedId === p.id;
             const badgeStyle =
               p.badge === 'Sale'
                 ? 'bg-[#C2410C] text-white'
@@ -182,7 +191,7 @@ export default function Trending({ onAddToBag }) {
                   {/* Wishlist heart */}
                   <button
                     type="button"
-                    onClick={() => toggleWish(p.id)}
+                    onClick={() => toggleWish(p)}
                     aria-pressed={isWished}
                     aria-label={
                       isWished
@@ -199,21 +208,34 @@ export default function Trending({ onAddToBag }) {
                     />
                   </button>
 
-                  {/* Add to bag: desktop e hover e, mobile e shob somoy */}
+                  {/* Add to bag: desktop e hover e, mobile e shobsomoy */}
                   <button
                     type="button"
-                    onClick={() => onAddToBag?.(p)}
-                    className={`absolute inset-x-3 bottom-3 flex cursor-pointer items-center justify-center gap-2 rounded-full bg-[#111111] py-3 text-[14px] font-medium text-white transition-all duration-300 lg:translate-y-3 lg:opacity-0 lg:group-hover:translate-y-0 lg:group-hover:opacity-100 lg:group-focus-within:translate-y-0 lg:group-focus-within:opacity-100 ${FOCUS}`}
+                    onClick={() => handleAdd(p)}
+                    className={`absolute inset-x-3 bottom-3 flex cursor-pointer items-center justify-center gap-2 rounded-full py-3 text-[14px] font-medium text-white transition-all duration-300 lg:translate-y-3 lg:opacity-0 lg:group-hover:translate-y-0 lg:group-hover:opacity-100 lg:group-focus-within:translate-y-0 lg:group-focus-within:opacity-100 ${
+                      isAdded
+                        ? 'bg-[#C2410C]'
+                        : 'bg-[#111111] hover:bg-[#C2410C]'
+                    } ${FOCUS}`}
                   >
-                    <FiShoppingBag size={16} />
-                    Add to bag
+                    {isAdded ? (
+                      <>
+                        <FiCheck size={16} />
+                        Added
+                      </>
+                    ) : (
+                      <>
+                        <FiShoppingBag size={16} />
+                        Add to bag
+                      </>
+                    )}
                   </button>
                 </div>
 
                 {/* Info */}
                 <Link
                   href={p.href}
-                  className={`mt-4 block no-underline text-[#111111] ${FOCUS}`}
+                  className={`mt-4 block text-[#111111] no-underline ${FOCUS}`}
                 >
                   <div className="flex items-start justify-between gap-3">
                     <h3 className="m-0 min-w-0 truncate text-[15px] font-medium leading-snug">

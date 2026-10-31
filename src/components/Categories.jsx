@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
-import { FiArrowRight, FiHeart, FiShoppingBag } from 'react-icons/fi';
+import { FiArrowRight, FiCheck, FiHeart, FiShoppingBag } from 'react-icons/fi';
+import { useCart } from '@/lib/cart';
 
 /* =========================================================
    CATEGORIES: sidebar er list
@@ -17,9 +18,7 @@ const CATEGORIES = [
 
 /* =========================================================
    PRODUCTS: naam, daam, photo, colour, href ekhane change korba.
-   href: Add to bag click korle ei page e jabe.
-   Nijer photo dite hole public/products/ e rekhe
-   image: '/products/panjabi.jpg' likho.
+   href: product page er link.
    ========================================================= */
 const PRODUCTS = [
   {
@@ -110,8 +109,10 @@ const FOCUS =
 const taka = n => `৳${Number(n).toLocaleString('en-US')}`;
 
 export default function Categories() {
+  const { addItem, wishIds, toggleWish } = useCart();
   const [active, setActive] = useState('all');
-  const [wished, setWished] = useState([]);
+
+  const [addedId, setAddedId] = useState(null);
 
   const products = useMemo(
     () =>
@@ -119,8 +120,16 @@ export default function Categories() {
     [active],
   );
 
-  const toggleWish = id => {
-    setWished(w => (w.includes(id) ? w.filter(x => x !== id) : [...w, id]));
+  const handleAdd = product => {
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      href: product.href,
+    });
+    setAddedId(product.id);
+    setTimeout(() => setAddedId(null), 1500);
   };
 
   return (
@@ -179,7 +188,8 @@ export default function Categories() {
           <div className="min-w-0 flex-1">
             <ul className="m-0 grid list-none grid-cols-2 gap-x-3 gap-y-8 p-0 sm:gap-x-5 md:grid-cols-3 xl:grid-cols-4">
               {products.map(p => {
-                const isWished = wished.includes(p.id);
+                const isWished = wishIds.includes(p.id);
+                const isAdded = addedId === p.id;
                 return (
                   <li key={p.id} className="group min-w-0">
                     <div className="relative">
@@ -204,7 +214,7 @@ export default function Categories() {
                       {/* Wishlist heart */}
                       <button
                         type="button"
-                        onClick={() => toggleWish(p.id)}
+                        onClick={() => toggleWish(p)}
                         aria-pressed={isWished}
                         aria-label={
                           isWished
@@ -221,15 +231,28 @@ export default function Categories() {
                         />
                       </button>
 
-                      {/* Add to bag: click korle product page e jabe.
-                          Desktop e hover e, mobile e shobsomoy dekha jabe. */}
-                      <Link
-                        href={p.href}
-                        className={`absolute inset-x-3 bottom-3 flex items-center justify-center gap-2 rounded-full bg-[#111111] py-3 text-[13px] font-medium text-white no-underline transition-all duration-300 hover:bg-[#C2410C] lg:translate-y-3 lg:opacity-0 lg:group-focus-within:translate-y-0 lg:group-focus-within:opacity-100 lg:group-hover:translate-y-0 lg:group-hover:opacity-100 ${FOCUS}`}
+                      {/* Add to bag: cart e jog hobe. Desktop e hover e, mobile e shobsomoy. */}
+                      <button
+                        type="button"
+                        onClick={() => handleAdd(p)}
+                        className={`absolute inset-x-3 bottom-3 flex cursor-pointer items-center justify-center gap-2 rounded-full py-3 text-[13px] font-medium text-white transition-all duration-300 lg:translate-y-3 lg:opacity-0 lg:group-focus-within:translate-y-0 lg:group-focus-within:opacity-100 lg:group-hover:translate-y-0 lg:group-hover:opacity-100 ${
+                          isAdded
+                            ? 'bg-[#C2410C]'
+                            : 'bg-[#111111] hover:bg-[#C2410C]'
+                        } ${FOCUS}`}
                       >
-                        <FiShoppingBag size={15} />
-                        Add to bag
-                      </Link>
+                        {isAdded ? (
+                          <>
+                            <FiCheck size={15} />
+                            Added
+                          </>
+                        ) : (
+                          <>
+                            <FiShoppingBag size={15} />
+                            Add to bag
+                          </>
+                        )}
+                      </button>
                     </div>
 
                     {/* Info */}
