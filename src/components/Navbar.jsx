@@ -457,18 +457,9 @@ export default function Navbar() {
                         <Link
                           href={p.href}
                           onClick={closeAll}
-                          className={`flex items-center gap-4 py-3 text-[#111111] no-underline hover:text-[#C2410C] ${FOCUS}`}
+                          className={`block py-3 text-[15px] font-medium text-[#111111] no-underline hover:text-[#C2410C] ${FOCUS}`}
                         >
-                          <span className="h-14 w-11 flex-none bg-[#EDEDED]" />
-                          <span className="flex flex-1 flex-col gap-0.5">
-                            <span className="text-[15px] font-medium">
-                              {p.name}
-                            </span>
-                            <span className="text-[13px] text-[#111111]/55">
-                              {p.category}
-                            </span>
-                          </span>
-                          <span className="text-[14px]">{taka(p.price)}</span>
+                          {p.name}
                         </Link>
                       </li>
                     ))}

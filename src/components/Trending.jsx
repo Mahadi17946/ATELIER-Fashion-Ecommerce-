@@ -4,80 +4,14 @@ import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { FiArrowRight, FiCheck, FiHeart, FiShoppingBag } from 'react-icons/fi';
 import { useCart } from '@/lib/cart';
+import { PRODUCTS } from '@/lib/products';
 
-/* =========================================================
-   PRODUCTS: naam, price, photo ekhane change korba.
-   ========================================================= */
-const PRODUCTS = [
-  {
-    id: 'cotton-panjabi',
-    name: 'Cotton panjabi',
-    category: 'Men',
-    price: 2450,
-    oldPrice: 2900,
-    badge: 'Best seller',
-    href: '/product/cotton-panjabi',
-    image:
-      'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=800&q=80',
-  },
-  {
-    id: 'jamdani-saree',
-    name: 'Jamdani saree',
-    category: 'Women',
-    price: 6800,
-    oldPrice: null,
-    badge: 'New',
-    href: '/product/jamdani-saree',
-    image:
-      'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=800&q=80',
-  },
-  {
-    id: 'leather-tote',
-    name: 'Leather tote bag',
-    category: 'Accessories',
-    price: 2800,
-    oldPrice: 3400,
-    badge: 'Sale',
-    href: '/product/leather-tote-bag',
-    image:
-      'https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=800&q=80',
-  },
-  {
-    id: 'printed-kurti',
-    name: 'Printed kurti',
-    category: 'Women',
-    price: 1650,
-    oldPrice: null,
-    badge: null,
-    href: '/product/printed-kurti',
-    image:
-      'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=800&q=80',
-  },
-  {
-    id: 'linen-shirt',
-    name: 'Linen shirt',
-    category: 'Men',
-    price: 1890,
-    oldPrice: null,
-    badge: 'New',
-    href: '/product/linen-shirt',
-    image:
-      'https://images.unsplash.com/photo-1603252109303-2751441dd157?auto=format&fit=crop&w=800&q=80',
-  },
-  {
-    id: 'silk-scarf',
-    name: 'Silk scarf',
-    category: 'Accessories',
-    price: 1100,
-    oldPrice: 1500,
-    badge: 'Sale',
-    href: '/product/silk-scarf',
-    image:
-      'https://images.unsplash.com/photo-1601924994987-69e26d50dc26?auto=format&fit=crop&w=800&q=80',
-  },
+const FILTERS = [
+  { label: 'All', value: 'all' },
+  { label: 'Women', value: 'women' },
+  { label: 'Men', value: 'men' },
+  { label: 'Accessories', value: 'accessories' },
 ];
-
-const FILTERS = ['All', 'Women', 'Men', 'Accessories'];
 
 const FOCUS =
   'focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#111111] focus-visible:outline-offset-2';
@@ -86,24 +20,24 @@ const taka = n => `৳${Number(n).toLocaleString('en-US')}`;
 
 export default function Trending() {
   const { addItem, wishIds, toggleWish } = useCart();
-  const [filter, setFilter] = useState('All');
+  const [filter, setFilter] = useState('all');
   const [addedId, setAddedId] = useState(null);
 
   const items = useMemo(
     () =>
-      filter === 'All' ? PRODUCTS : PRODUCTS.filter(p => p.category === filter),
+      filter === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.category === filter),
     [filter],
   );
 
-  const handleAdd = product => {
+  const handleAdd = p => {
     addItem({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      image: product.image,
-      href: product.href,
+      id: p.id,
+      name: p.name,
+      price: p.price,
+      image: p.image,
+      href: p.href,
     });
-    setAddedId(product.id);
+    setAddedId(p.id);
     setTimeout(() => setAddedId(null), 1500);
   };
 
@@ -131,21 +65,21 @@ export default function Trending() {
             className="flex flex-wrap gap-2"
           >
             {FILTERS.map(f => {
-              const active = filter === f;
+              const active = filter === f.value;
               return (
                 <button
-                  key={f}
+                  key={f.value}
                   type="button"
                   role="tab"
                   aria-selected={active}
-                  onClick={() => setFilter(f)}
+                  onClick={() => setFilter(f.value)}
                   className={`cursor-pointer rounded-full border px-5 py-2.5 text-[14px] font-medium transition-colors duration-200 ${
                     active
                       ? 'border-[#111111] bg-[#111111] text-white'
                       : 'border-black/15 bg-white text-[#111111] hover:border-[#111111]'
                   } ${FOCUS}`}
                 >
-                  {f}
+                  {f.label}
                 </button>
               );
             })}
@@ -157,10 +91,15 @@ export default function Trending() {
           {items.map(p => {
             const isWished = wishIds.includes(p.id);
             const isAdded = addedId === p.id;
+            const outOfStock = (p.stock ?? 0) <= 0;
+            const needsOptions = (p.sizes?.length ?? 0) > 0;
             const badgeStyle =
               p.badge === 'Sale'
                 ? 'bg-[#C2410C] text-white'
                 : 'bg-white text-[#111111]';
+
+            const actionBase = `absolute inset-x-3 bottom-3 flex items-center justify-center gap-2 rounded-full py-3 text-[14px] font-medium text-white transition-all duration-300 lg:translate-y-3 lg:opacity-0 lg:group-hover:translate-y-0 lg:group-hover:opacity-100 lg:group-focus-within:translate-y-0 lg:group-focus-within:opacity-100 ${FOCUS}`;
+
             return (
               <li key={p.id} className="group min-w-0">
                 {/* Image */}
@@ -208,28 +147,46 @@ export default function Trending() {
                     />
                   </button>
 
-                  {/* Add to bag: desktop e hover e, mobile e shobsomoy */}
-                  <button
-                    type="button"
-                    onClick={() => handleAdd(p)}
-                    className={`absolute inset-x-3 bottom-3 flex cursor-pointer items-center justify-center gap-2 rounded-full py-3 text-[14px] font-medium text-white transition-all duration-300 lg:translate-y-3 lg:opacity-0 lg:group-hover:translate-y-0 lg:group-hover:opacity-100 lg:group-focus-within:translate-y-0 lg:group-focus-within:opacity-100 ${
-                      isAdded
-                        ? 'bg-[#C2410C]'
-                        : 'bg-[#111111] hover:bg-[#C2410C]'
-                    } ${FOCUS}`}
-                  >
-                    {isAdded ? (
-                      <>
-                        <FiCheck size={16} />
-                        Added
-                      </>
-                    ) : (
-                      <>
-                        <FiShoppingBag size={16} />
-                        Add to bag
-                      </>
-                    )}
-                  </button>
+                  {/* Action: stock / size / add */}
+                  {outOfStock ? (
+                    <button
+                      type="button"
+                      disabled
+                      className={`${actionBase} cursor-not-allowed bg-[#111111]/40 opacity-100 lg:translate-y-0`}
+                    >
+                      Out of stock
+                    </button>
+                  ) : needsOptions ? (
+                    <Link
+                      href={p.href}
+                      className={`${actionBase} bg-[#111111] no-underline hover:bg-[#C2410C]`}
+                    >
+                      <FiShoppingBag size={16} />
+                      Select size
+                    </Link>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => handleAdd(p)}
+                      className={`${actionBase} cursor-pointer ${
+                        isAdded
+                          ? 'bg-[#C2410C]'
+                          : 'bg-[#111111] hover:bg-[#C2410C]'
+                      }`}
+                    >
+                      {isAdded ? (
+                        <>
+                          <FiCheck size={16} />
+                          Added
+                        </>
+                      ) : (
+                        <>
+                          <FiShoppingBag size={16} />
+                          Add to bag
+                        </>
+                      )}
+                    </button>
+                  )}
                 </div>
 
                 {/* Info */}
@@ -253,7 +210,10 @@ export default function Trending() {
                     </div>
                   </div>
                   <p className="m-0 mt-1 text-[13px] text-[#111111]/55">
-                    {p.category}
+                    {p.category === 'new-in'
+                      ? 'New in'
+                      : p.category.charAt(0).toUpperCase() +
+                        p.category.slice(1)}
                   </p>
                 </Link>
               </li>
@@ -264,7 +224,7 @@ export default function Trending() {
         {/* Footer link */}
         <div className="mt-12 flex justify-center">
           <Link
-            href="/shop"
+            href="/"
             className={`inline-flex items-center gap-2 rounded-full border border-black/15 px-6 py-3 text-[14px] font-medium text-[#111111] no-underline transition-colors duration-200 hover:bg-[#111111] hover:text-white ${FOCUS}`}
           >
             Shop all products
