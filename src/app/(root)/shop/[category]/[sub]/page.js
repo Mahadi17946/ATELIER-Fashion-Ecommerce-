@@ -37,6 +37,8 @@ const SUBS = {
   },
 };
 
+
+//hellow world
 export default async function SubCategoryPage({ params }) {
   const { category, sub } = await params;
   const cfg = SUBS[category];
