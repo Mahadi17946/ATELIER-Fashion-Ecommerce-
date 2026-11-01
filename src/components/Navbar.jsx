@@ -1,5 +1,5 @@
 'use client';
-
+import AccountMenu from '@/components/AccountMenu';
 import { useCart } from '@/lib/cart';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -257,7 +257,7 @@ export default function Navbar() {
           <p className="m-0 text-center lg:text-left">
             Free delivery in Dhaka over ৳3000. Cash on delivery available.
           </p>
-          <div className="hidden gap-5 lg:flex">
+          <div className="hidden items-center gap-5 lg:flex">
             <Link
               href="/track-order"
               className="text-white no-underline hover:underline"
@@ -269,6 +269,19 @@ export default function Navbar() {
               className="text-white no-underline hover:underline"
             >
               Help
+            </Link>
+            <span className="h-3 w-px bg-white/30" aria-hidden="true" />
+            <Link
+              href="/login"
+              className="text-white no-underline hover:underline"
+            >
+              Log in
+            </Link>
+            <Link
+              href="/signup"
+              className="text-white no-underline hover:underline"
+            >
+              Sign up
             </Link>
           </div>
         </div>
@@ -371,9 +384,7 @@ export default function Navbar() {
                 <FiShoppingBag size={22} />
                 <Badge count={cartCount} />
               </Link>
-              <Link href="/account" className={ICON_BTN} aria-label="Account">
-                <FiUser size={22} />
-              </Link>
+              <AccountMenu />
             </div>
           </div>
         </nav>

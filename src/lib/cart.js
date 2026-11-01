@@ -66,28 +66,32 @@ export function CartProvider({ children }) {
 
   /* ---------- Cart ---------- */
 
-  const addItem = useCallback((product, qty = 1) => {
-    setItems(prev => {
-      const found = prev.find(i => i.id === product.id);
-      if (found) {
-        return prev.map(i =>
-          i.id === product.id ? { ...i, qty: i.qty + qty } : i,
-        );
-      }
-      return [
-        ...prev,
-        {
-          id: product.id,
-          name: product.name,
-          price: product.price,
-          image: product.image,
-          href: product.href,
-          color: product.color ?? null,
-          qty,
-        },
-      ];
-    });
-  }, []);
+   const addItem = useCallback((product, qty = 1) => {
+     const color = product.color ?? null;
+     const size = product.size ?? null;
+     // Same product hole onno colour/size hole alada line hobe
+     const key = [product.id, color ?? '', size ?? ''].join('|');
+     setItems(prev => {
+       const found = prev.find(i => i.id === key);
+       if (found) {
+         return prev.map(i => (i.id === key ? { ...i, qty: i.qty + qty } : i));
+       }
+       return [
+         ...prev,
+         {
+           id: key,
+           productId: product.id,
+           name: product.name,
+           price: product.price,
+           image: product.image,
+           href: product.href,
+           color,
+           size,
+           qty,
+         },
+       ];
+     });
+   }, []);
 
   const updateQty = useCallback((id, qty) => {
     setItems(prev =>

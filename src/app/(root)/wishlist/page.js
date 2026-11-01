@@ -44,10 +44,10 @@ export default function WishlistPage() {
           Wishlist
         </span>
         <h1 className="mb-0 mt-5 text-[clamp(30px,4vw,48px)] font-normal leading-[1.05] tracking-tight text-[#111111]">
-          Apnar wishlist ekhon khali
+          Your wishlist is empty
         </h1>
         <p className="mb-0 mt-4 max-w-[420px] text-[15px] text-[#111111]/60">
-          Pochondo hole heart icon e click korun, ekhane jamba.
+          Tap the heart icon on any product to save it here.
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Link
@@ -83,7 +83,7 @@ export default function WishlistPage() {
             Your wishlist
           </h1>
           <p className="mb-0 mt-3 text-[14px] text-[#111111]/60">
-            {wishCount} ta item
+            {wishCount} items
           </p>
         </div>
 
@@ -134,7 +134,7 @@ export default function WishlistPage() {
                 </p>
               </Link>
 
-              {/* Bag e move: cart e jog hobe, wishlist theke soriye dibe */}
+              {/* Move to bag: adds to cart and removes from wishlist */}
               <button
                 type="button"
                 onClick={() => {

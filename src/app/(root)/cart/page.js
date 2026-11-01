@@ -124,9 +124,11 @@ export default function CartPage() {
                       >
                         {item.name}
                       </Link>
-                      {item.color && (
+                      {(item.color || item.size) && (
                         <p className="m-0 mt-1 text-[13px] text-[#111111]/55">
-                          Colour: {item.color}
+                          {[item.color, item.size && `Size ${item.size}`]
+                            .filter(Boolean)
+                            .join(' · ')}
                         </p>
                       )}
                     </div>
