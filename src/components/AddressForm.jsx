@@ -15,7 +15,7 @@ const EMPTY = { name: '', email: '', phone: '', address: '', district: '' };
 
 function Field({ label, error, children }) {
   return (
-    <label className="flex flex-col gap-2">
+    <label className="flex w-full flex-col gap-2">
       <span className="text-[13px] font-medium text-[#111111]">{label}</span>
       {children}
       {error && <span className="text-[12px] text-[#C2410C]">{error}</span>}
@@ -79,8 +79,12 @@ export default function AddressForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+    <form
+      onSubmit={handleSubmit}
+      noValidate
+      className="flex w-full flex-col gap-5"
+    >
+      <div className="grid grid-cols-1 gap-4 sm:gap-5 sm:grid-cols-2">
         <Field label="Full name" error={errors.name}>
           <input
             name="name"
@@ -138,21 +142,21 @@ export default function AddressForm({
       </div>
 
       {optionLabel && (
-        <label className="flex cursor-pointer items-center gap-2 text-[14px] text-[#111111]">
+        <label className="flex cursor-pointer items-start sm:items-center gap-2.5 text-[14px] text-[#111111]">
           <input
             type="checkbox"
             checked={option}
             onChange={e => setOption(e.target.checked)}
-            className="h-4 w-4 accent-[#111111]"
+            className="mt-0.5 sm:mt-0 h-4 w-4 shrink-0 accent-[#111111]"
           />
-          {optionLabel}
+          <span>{optionLabel}</span>
         </label>
       )}
 
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3">
         <button
           type="submit"
-          className={`cursor-pointer rounded-full bg-[#111111] px-7 py-3.5 text-[14px] font-medium text-white transition-colors hover:bg-[#C2410C] ${FOCUS}`}
+          className={`w-full sm:w-auto cursor-pointer rounded-full bg-[#111111] px-7 py-3.5 text-center text-[14px] font-medium text-white transition-colors hover:bg-[#C2410C] ${FOCUS}`}
         >
           {submitLabel}
         </button>
@@ -160,7 +164,7 @@ export default function AddressForm({
           <button
             type="button"
             onClick={onCancel}
-            className={`cursor-pointer rounded-full border border-black/15 px-7 py-3.5 text-[14px] font-medium text-[#111111] transition-colors hover:border-[#111111] ${FOCUS}`}
+            className={`w-full sm:w-auto cursor-pointer rounded-full border border-black/15 px-7 py-3.5 text-center text-[14px] font-medium text-[#111111] transition-colors hover:border-[#111111] ${FOCUS}`}
           >
             Cancel
           </button>

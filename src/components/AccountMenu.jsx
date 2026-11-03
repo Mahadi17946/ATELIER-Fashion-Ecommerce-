@@ -36,7 +36,7 @@ export default function AccountMenu() {
   }, [open]);
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className="relative inline-block">
       <button
         type="button"
         onClick={() => setOpen(o => !o)}
@@ -51,7 +51,7 @@ export default function AccountMenu() {
       {open && (
         <div
           role="menu"
-          className="absolute right-0 top-full z-50 mt-2 w-44 rounded-2xl border border-black/10 bg-white p-2 shadow-[0_8px_24px_rgba(0,0,0,0.08)]"
+          className="absolute right-0 top-full z-50 mt-2 w-44 max-w-[calc(100vw-2rem)] rounded-2xl border border-black/10 bg-white p-2 shadow-[0_8px_24px_rgba(0,0,0,0.08)]"
         >
           {ITEMS.map(item => (
             <Link

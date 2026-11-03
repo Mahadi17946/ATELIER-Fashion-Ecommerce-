@@ -152,19 +152,19 @@ export default function Categories() {
           {/* Sidebar: desktop e vertical list, mobile e horizontal chips */}
           <aside className="lg:w-[200px] lg:flex-none">
             <nav aria-label="Categories">
-              <ul className="m-0 flex list-none gap-2 overflow-x-auto p-0 pb-2 lg:flex-col lg:gap-1 lg:overflow-visible lg:pb-0">
+              <ul className="category-scroll m-0 flex list-none gap-2 overflow-x-auto overscroll-x-contain touch-pan-x p-0 pb-2 lg:flex-col lg:gap-2 lg:overflow-visible lg:pb-0">
                 {CATEGORIES.map(c => {
                   const isActive = active === c.slug;
                   return (
-                    <li key={c.slug} className="flex-none">
+                    <li key={c.slug} className="flex-none lg:w-full">
                       <button
                         type="button"
                         onClick={() => setActive(c.slug)}
                         aria-current={isActive ? 'true' : undefined}
-                        className={`cursor-pointer whitespace-nowrap rounded-full px-4 py-2 text-left text-[14px] transition-colors duration-200 lg:rounded-none lg:px-0 lg:py-1.5 ${
+                        className={`w-full cursor-pointer whitespace-nowrap rounded-full px-4 py-2.5 text-left text-[13px] font-medium tracking-wide transition-all duration-200 lg:rounded-lg lg:px-4 lg:py-3 lg:text-[14px] ${
                           isActive
-                            ? 'bg-[#111111] text-white lg:bg-transparent lg:font-medium lg:text-[#111111] lg:underline lg:underline-offset-4'
-                            : 'border border-black/15 text-[#111111]/60 hover:text-[#111111] lg:border-0 lg:hover:underline lg:hover:underline-offset-4'
+                            ? 'bg-[#111111] text-white'
+                            : 'border border-black/15 text-[#111111]/65 hover:border-black/30 hover:bg-[#F7F7F5] hover:text-[#111111] lg:border-transparent'
                         } ${FOCUS}`}
                       >
                         {c.name}
