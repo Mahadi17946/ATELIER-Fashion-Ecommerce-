@@ -4,9 +4,7 @@ import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { FiArrowLeft, FiArrowRight } from 'react-icons/fi';
 
-/* =========================================================
-   SLIDES: text, link, photo ekhane change korba.
-   ========================================================= */
+
 const SLIDES = [
   {
     label: 'New arrivals',
@@ -99,7 +97,7 @@ export default function Hero() {
             }`}
           >
             {/* Background Photo */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
+            
             <img
               src={s.image}
               alt=""

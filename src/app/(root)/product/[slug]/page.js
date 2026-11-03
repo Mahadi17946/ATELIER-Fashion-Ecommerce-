@@ -31,7 +31,6 @@ const INPUT =
 
 const taka = n => `৳${Number(n).toLocaleString('en-US')}`;
 
-/* Stock er obostha onujayi label ar colour */
 function getStockStatus(stock) {
   if (stock <= 0) {
     return {
@@ -389,7 +388,7 @@ function ProductView({ product }) {
             )}
 
             <p className="m-0 mt-4 text-[13px] text-[#111111]/55">
-              Free delivery over ৳3000 · Cash on delivery available
+              Free delivery over ৳2000 · Cash on delivery available
             </p>
 
             {/* Details */}

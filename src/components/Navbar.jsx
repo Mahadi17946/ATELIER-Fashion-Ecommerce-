@@ -14,9 +14,7 @@ import {
   FiChevronUp,
 } from 'react-icons/fi';
 
-/* =========================================================
-   DATA: menu ar product ekhane change korba
-   ========================================================= */
+
 
 const MENU = [
   { label: 'New in', href: '/shop/new' },
